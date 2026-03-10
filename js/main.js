@@ -18,6 +18,7 @@
         initFAQ();
         initContactForm();
         initActiveNavigation();
+        initPortfolioConfirm();
     });
 
     // ---------- Mobile menu ----------
@@ -45,6 +46,74 @@
                 navMenu.classList.remove('active');
                 menuToggle.classList.remove('active');
             }
+        });
+    }
+
+    // ---------- Portfolio: confirmação profissional antes de abrir link externo ----------
+    function initPortfolioConfirm() {
+        let overlay = document.getElementById('portfolio-confirm-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'portfolio-confirm-overlay';
+            overlay.className = 'portfolio-confirm-overlay';
+            overlay.setAttribute('aria-hidden', 'true');
+            overlay.innerHTML = `
+                <div class="portfolio-confirm-modal" role="dialog" aria-labelledby="portfolio-confirm-title" aria-modal="true">
+                    <div class="portfolio-confirm-icon" aria-hidden="true"><i class="fas fa-external-link-alt"></i></div>
+                    <h3 id="portfolio-confirm-title">Visitar projeto</h3>
+                    <p>Você está saindo do site. Deseja visitar <span class="portfolio-confirm-project"></span>? O link será aberto em nova aba.</p>
+                    <div class="portfolio-confirm-actions">
+                        <button type="button" class="portfolio-confirm-btn portfolio-confirm-btn-cancel">Cancelar</button>
+                        <button type="button" class="portfolio-confirm-btn portfolio-confirm-btn-confirm">Sim, visitar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            const projectEl = overlay.querySelector('.portfolio-confirm-project');
+            const btnCancel = overlay.querySelector('.portfolio-confirm-btn-cancel');
+            const btnConfirm = overlay.querySelector('.portfolio-confirm-btn-confirm');
+            let pendingHref = null;
+
+            function close() {
+                overlay.classList.remove('is-visible');
+                overlay.setAttribute('aria-hidden', 'true');
+                document.removeEventListener('keydown', onEsc);
+                document.body.style.overflow = '';
+            }
+
+            function onEsc(e) {
+                if (e.key === 'Escape') { close(); }
+            }
+
+            btnCancel.addEventListener('click', () => { close(); pendingHref = null; });
+            btnConfirm.addEventListener('click', () => {
+                if (pendingHref) window.open(pendingHref, '_blank', 'noopener,noreferrer');
+                close();
+                pendingHref = null;
+            });
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) { close(); pendingHref = null; }
+            });
+
+            window.__portfolioConfirm = { show: (projectName, href) => {
+                projectEl.textContent = projectName || 'este projeto';
+                pendingHref = href;
+                overlay.classList.add('is-visible');
+                overlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                document.addEventListener('keydown', onEsc);
+                btnConfirm.focus();
+            }};
+        }
+
+        document.querySelectorAll('.portfolio-card[href^="http"]').forEach(card => {
+            card.addEventListener('click', function (e) {
+                e.preventDefault();
+                const projectName = this.querySelector('.portfolio-content h3')?.textContent?.trim();
+                const href = this.getAttribute('href');
+                window.__portfolioConfirm.show(projectName || 'este projeto', href);
+            });
         });
     }
 
