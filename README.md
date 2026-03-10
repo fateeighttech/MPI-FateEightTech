@@ -45,16 +45,6 @@ Somos especialistas em **desenvolvimento web**, criação de **sistemas personal
 
 ---
 
-## 💬 O que nossos clientes dizem
-
-> *"A Fate Eight revolucionou nossa presença online. Em apenas 3 meses de campanhas Google Ads, aumentamos a venda dos nossos serviços em 150%! Profissionais excepcionais! Amei o site!!!"*  
-> — **Susimar Alves**, CEO da Global Solução Dedetizadora
-
-> *"O sistema personalizado desenvolvido pela equipe otimizou todos os nossos processos internos. Reduzimos o tempo de atendimento em 60% e aumentamos a produtividade. O site ficou sensacional!"*  
-> — **Lucas Almeida**, CEO da Xequemate Serviços Dedetizadora
-
----
-
 ## 📞 Contato
 
 <div align="center">
