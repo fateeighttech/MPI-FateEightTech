@@ -354,8 +354,38 @@
         });
     }
 
-    // ---------- reCAPTCHA helpers ----------
+    // ---------- reCAPTCHA lazy load (carrega só quando formulário entra em vista - PageSpeed) ----------
+    window.__f8_recaptcha_loaded = false;
     window.__f8_recaptcha_widgets = window.__f8_recaptcha_widgets || [];
+
+    function loadRecaptchaScript() {
+        if (window.__f8_recaptcha_loaded) return;
+        window.__f8_recaptcha_loaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+        s.async = true;
+        s.defer = true;
+        document.head.appendChild(s);
+    }
+
+    var contactSection = document.getElementById('contato');
+    if (contactSection && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                loadRecaptchaScript();
+                io.disconnect();
+            }
+        }, { rootMargin: '200px', threshold: 0.01 });
+        io.observe(contactSection);
+    } else if (contactSection) {
+        window.addEventListener('scroll', function onScroll() {
+            var rect = contactSection.getBoundingClientRect();
+            if (rect.top < window.innerHeight + 200) {
+                loadRecaptchaScript();
+                window.removeEventListener('scroll', onScroll);
+            }
+        }, { passive: true });
+    }
 
     window.onRecaptchaLoad = function () {
         try {

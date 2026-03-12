@@ -2,15 +2,20 @@
 <html lang="pt-BR">
 
 <head>
-    <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-N3N22PZX');</script>
+    <!-- Preconnect (reduz latência em recursos externos) -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://www.google.com" crossorigin>
+    <!-- Preload LCP (imagem crítica do hero) -->
+    <link rel="preload" as="image" href="images/logos/logo-hero.jpg">
+
+    <!-- Google Tag Manager (defer para não bloquear LCP) -->
+    <script>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+        var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+        j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-N3N22PZX');
+    </script>
 
     <!-- Meta Básico -->
     <meta charset="UTF-8">
@@ -51,17 +56,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17673039996"></script>
+    <!-- Google tag (gtag) - carregado após interação para não bloquear LCP -->
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'AW-17673039996');
+        function gtag(){dataLayer.push(arguments);}
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(function() {
+                var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=AW-17673039996';
+                document.head.appendChild(s);
+                s.onload=function(){gtag('js',new Date());gtag('config','AW-17673039996');};
+            }, { timeout: 2000 });
+        } else {
+            window.addEventListener('load', function() {
+                var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=AW-17673039996';
+                document.head.appendChild(s);
+                s.onload=function(){gtag('js',new Date());gtag('config','AW-17673039996');};
+            });
+        }
     </script>
-
-    <!-- reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
 </head>
 
 <body>
@@ -74,7 +86,7 @@
             <div class="container">
                 <div class="nav-wrapper">
                     <div class="logo">
-                        <img src="images/logos/logo-32x32.png" alt="Fate Eight Tech Logo" class="logo-img" width="50" height="50" loading="eager">
+                        <img src="images/logos/logo-32x32.png" alt="Fate Eight Tech Logo" class="logo-img" width="50" height="50" loading="eager" decoding="async">
                         <a href="#home" style="text-decoration: none; color: inherit;">
                             <span class="logo-text">Fate<span>Eight</span> Tech</span>
                         </a>
@@ -110,7 +122,7 @@
     <section id="home" class="hero-fullscreen">
         <div class="hero-content">
             <div class="hero-logo">
-                <img src="images/logos/logo-hero.jpg" alt="Fate Eight Tech" class="hero-logo-img" width="370" height="370" fetchpriority="high" loading="eager">
+                <img src="images/logos/logo-hero.jpg" alt="Fate Eight Tech" class="hero-logo-img" width="370" height="370" fetchpriority="high" loading="eager" decoding="async">
             </div>
             <h1 class="hero-title">Transforme Sua Presença Digital</h1>
             <p class="hero-subtitle">Criação de Sites, Manutenção, SEO, Tráfego Pago, Gestão de Mídias Sociais e Google Ads</p>
